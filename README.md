@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/hadoopkrbtransparent.png" height="250">
+  <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/hadoopkrbtransparent.png" height="250">
 </p>
 
 # Hadoop Cluster + Kerberos Authentication Server
@@ -54,6 +54,11 @@ This script sets up a 5 node system that features :
 - 2 Dedicated Datanodes
 - 1 Kerberos 5 server with OpenLDAP backend
 - 1 Web accessible NGINX webserver with Authentik for web-based management and SPNEGO authentification, Authentik can also be used to handle internal Kerberos authentication mechanisms normally handled by OpenSSH + KDC GSSAPI based authentification
+
+<p align="center">
+  <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/net.png">
+</p>
+
 
 ### Communications
 
