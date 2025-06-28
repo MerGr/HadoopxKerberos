@@ -64,6 +64,16 @@ This script sets up a 5 node system that features :
 
 these services communicate with each other via NGINX TCP streams on the subdomains, NGINX itself reaches these services via Key based SSH TCP port forwarding tunnels running on Docker
 
+We set up multiple DNS records for these services :
+
+| Roles | URL | Pointing to |
+| :------------ | :------------ | :------------ |
+|CNAME|krb.mergrweb.me|OCI Madrid server which forwards via SSH Proxy to the Kerberos server |
+|CNAME|hdfs-nn.mergrweb.me|OCI Paris server which forwards via SSH Proxy to the Namenode server
+|A|hdfs-dn1.mergrweb.me |OCI Frankfurt server|
+|A|hdfs-dn2.mergrweb.me|OCI Paris server|
+|CNAME|authentik.mergrweb.me|OCI Madrid server which NGINX proxies to Authentik-server Docker container|
+
 For the specific configuration that these scripts was made for, many of these servers are on different networks, necessitating SSH (or OpenVPN/WireGuard split tunnels if the LAN firewall allows it) for access.
 
 Configuration would be significantly simpler if all the machines reside on the same local network.
