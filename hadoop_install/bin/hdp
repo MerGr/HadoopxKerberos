@@ -2,53 +2,89 @@
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 {start|stop}"
+  echo "Usage: $0 {start|stop|restart}"
   exit 1
 fi
 
 ACTION=$1
-if [[ "$ACTION" != "start" && "$ACTION" != "stop" ]]; then
+if [[ "$ACTION" != "start" && "$ACTION" != "stop" && "$ACTION" != "restart" ]]; then
   echo "Invalid argument: $ACTION"
-  echo "Usage: $0 {start|stop}"
+  echo "Usage: $0 {start|stop|restart}"
   exit 1
 fi
 
-# ssh -v aliases for nodes
+# Read HADOOP_HOME from current user's environment
+if ! HADOOP_HOME=$(bash -c 'source ~/.bashrc >/dev/null 2>&1 && echo "$HADOOP_HOME"'); then
+  echo "Failed to source HADOOP_HOME from ~/.bashrc"
+  exit 1
+fi
+
+if [[ -z "$HADOOP_HOME" ]]; then
+  echo "HADOOP_HOME is not set in ~/.bashrc"
+  exit 1
+fi
+
 NAMENODE="namenode"
 DATANODES=("dn1" "dn2")
 
+run_ssh() {
+  local host=$1
+  shift
+  echo "[$host] $*"
+  ssh -q "$host" "$@"
+}
+
+remote_hadoop_cmd() {
+  local user=$1
+  local host=$2
+  local cmd=$3
+  run_ssh "$host" "sudo -u $user bash -c 'export HADOOP_HOME=$HADOOP_HOME && \$HADOOP_HOME/bin/$cmd'"
+}
+
+remote_authenticate() {
+  local user=$1
+  local host=$2
+  local principal=$3
+  echo "Authenticating $user on $host with $principal"
+  run_ssh "$host" "sudo -u $user kdestroy || true"
+  run_ssh "$host" "sudo -u $user kinit -k -t /etc/krb5.keytab $principal"
+}
+
 if [ "$ACTION" == "start" ]; then
-  echo "Authenticating hdfs on $NAMENODE..."
-  ssh -v "$NAMENODE" "sudo -u hdfs kinit -k -t /etc/krb5.keytab hdfs/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME"
+  remote_authenticate hdfs "$NAMENODE" "hdfs/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME"
+  remote_hadoop_cmd hdfs "$NAMENODE" "hdfs --daemon start namenode"
 
-  echo "Starting NameNode daemon on $NAMENODE..."
-  ssh -v "$NAMENODE" "sudo -u hdfs ${HADOOP_HOME}/bin/hdfs --daemon --debug start namenode"
-
-  echo "Authenticating hdfs on datanodes..."
-  ssh -v "dn1" "sudo -u hdfs kinit -k -t /etc/krb5.keytab hdfs/hdfs-dn1.mergrweb.me@KRB.MERGRWEB.ME"
-  ssh -v "dn2" "sudo -u hdfs kinit -k -t /etc/krb5.keytab hdfs/hdfs-dn2.mergrweb.me@KRB.MERGRWEB.ME"
-
-  echo "Starting DataNode daemons on datanodes..."
   for dn in "${DATANODES[@]}"; do
-    echo "Starting DataNode on $dn..."
-    ssh -v "$dn" "sudo -u hdfs ${HADOOP_HOME}/bin/hdfs --daemon --debug start datanode"
+    remote_authenticate hdfs "$dn" "hdfs/hdfs-$dn.mergrweb.me@KRB.MERGRWEB.ME"
+    remote_hadoop_cmd hdfs "$dn" "hdfs --daemon start datanode"
   done
 
-  echo "Authenticating yarn on $NAMENODE..."
-  ssh -v "$NAMENODE" "sudo -u yarn kinit -k -t /etc/krb5.keytab yarn/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME"
+  remote_authenticate yarn "$NAMENODE" "yarn/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME"
+  remote_hadoop_cmd yarn "$NAMENODE" "yarn --daemon start resourcemanager"
 
-  echo "Starting ResourceManager on $NAMENODE..."
-  ssh -v "$NAMENODE" "sudo -u yarn ${HADOOP_HOME}/bin/yarn --daemon --debug start resourcemanager"
-
-  echo "Authenticating yarn on datanodes..."
-  ssh -v "dn1" "sudo -u yarn kinit -k -t /etc/krb5.keytab yarn/hdfs-dn1.mergrweb.me@KRB.MERGRWEB.ME"
-  ssh -v "dn2" "sudo -u yarn kinit -k -t /etc/krb5.keytab yarn/hdfs-dn2.mergrweb.me@KRB.MERGRWEB.ME"
-
-  echo "Starting NodeManagers on datanodes..."
   for dn in "${DATANODES[@]}"; do
-    echo "Starting NodeManager on $dn..."
-    ssh -v "$dn" "sudo -u yarn ${HADOOP_HOME}/bin/yarn --daemon --debug start nodemanager"
+    remote_authenticate yarn "$dn" "yarn/hdfs-$dn.mergrweb.me@KRB.MERGRWEB.ME"
+    remote_hadoop_cmd yarn "$dn" "yarn --daemon start nodemanager"
   done
 
   echo "Hadoop startup sequence completed."
+
+elif [ "$ACTION" == "stop" ]; then
+  for dn in "${DATANODES[@]}"; do
+    remote_hadoop_cmd yarn "$dn" "yarn --daemon stop nodemanager"
+  done
+
+  remote_hadoop_cmd yarn "$NAMENODE" "yarn --daemon stop resourcemanager"
+
+  for dn in "${DATANODES[@]}"; do
+    remote_hadoop_cmd hdfs "$dn" "hdfs --daemon stop datanode"
+  done
+
+  remote_hadoop_cmd hdfs "$NAMENODE" "hdfs --daemon stop namenode"
+
+  echo "Hadoop shutdown sequence completed."
+
+elif [ "$ACTION" == "restart" ]; then
+  "$0" stop
+  "$0" start
 fi
