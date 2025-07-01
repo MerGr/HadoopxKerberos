@@ -26,10 +26,16 @@ fi
 
 # Function for prompt
 confirm_kerberos_ssh() {
-  dialog --title "WARNING!!!" \
-    --backtitle "Apache Hadoop Install script" \
-    --colors --msgbox "\Zb\Z1Red bold text\Zn" \
-    --yesno "This installation option depends on an existing installation. Is Kerberos and SSH keys set up and working?" 7 60
+  dialog --colors \
+         --backtitle "Apache Hadoop Install script" \
+         --title "WARNING!!!" \
+         --msgbox "\Zb\Z1This installation depends on Kerberos and SSH being preconfigured.\Zn" 8 60
+
+  dialog --backtitle "Apache Hadoop Install script" \
+         --title "Confirmation" \
+         --yesno "Is Kerberos and SSH key setup complete?" 7 60
+}
+
 
   return $?
 }
@@ -89,8 +95,6 @@ while true; do
     2)
       if confirm_kerberos_ssh; then
         while true; do
-          HEIGHT=15
-          WIDTH=40
           CHOICE_HEIGHT=3
           BACKTITLE="Apache Hadoop Install script"
           TITLE="Datanode Select"
