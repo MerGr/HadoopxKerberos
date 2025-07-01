@@ -2,8 +2,6 @@
 # AUTHOR: GRAOUI ABDERRAHMANE
 # THIS IS THE MAIN SCRIPT, RUN THIS AS ROOT
 
-set -e  # Exit on unhandled errors
-
 # Make sure only root can run our script
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -20,10 +18,10 @@ if ! ([[ "$ID" == "ubuntu" || "$ID" == "debian" ]] || [[ "$ID_LIKE" == *"debian"
 fi
 
 # Install dependencies
-if ! dpkg -l dialog >/dev/null 2>&1; then
+if ! command -v dialog >/dev/null 2>&1; then
   echo "Installing dependencies..."
   apt update
-  apt install dialog -y || { echo "Installation failed"; exit 1; }
+  apt install dialog -y || { echo "Installation failed"; exit 72; }
 fi
 
 # Function for prompt
@@ -70,7 +68,10 @@ CHOICE=$(dialog --clear \
                 "${OPTIONS[@]}" \
                 2>&1 >/dev/tty)
 
-clear
+echo "DEBUG: CHOICE='$CHOICE'" >&2
+
+
+#clear
 case $CHOICE in
   1)
     if confirm_kerberos_ssh; then
@@ -84,31 +85,35 @@ case $CHOICE in
     ;;
 
   2)
-    HEIGHT=15
-    WIDTH=40
-    CHOICE_HEIGHT=3
-    BACKTITLE="Apache Hadoop Install script"
-    TITLE="Datanode Select"
-    MENU="Choose a DataNode to install"
+    if confirm_kerberos_ssh; then
+      HEIGHT=15
+      WIDTH=40
+      CHOICE_HEIGHT=3
+      BACKTITLE="Apache Hadoop Install script"
+      TITLE="Datanode Select"
+      MENU="Choose a DataNode to install"
 
-    DN_OPTIONS=(1 "DataNode 1"
-                2 "DataNode 2"
-                3 "Return")
+      DN_OPTIONS=(1 "DataNode 1"
+                  2 "DataNode 2"
+                  3 "Return")
 
-    DN_CHOICE=$(dialog --clear \
-                        --backtitle "$BACKTITLE" \
-                        --title "$TITLE" \
-                        --menu "$MENU" \
-                        $HEIGHT $WIDTH $CHOICE_HEIGHT \
-                        "${DN_OPTIONS[@]}" \
-                        2>&1 >/dev/tty)
+      DN_CHOICE=$(dialog --clear \
+                          --backtitle "$BACKTITLE" \
+                          --title "$TITLE" \
+                          --menu "$MENU" \
+                          $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                          "${DN_OPTIONS[@]}" \
+                          2>&1 >/dev/tty)
 
-    clear
-    case $DN_CHOICE in
-      1) install_datanode "DataNode 1" ;;
-      2) install_datanode "DataNode 2" ;;
-      3) echo "Returning to main menu." ;;
-    esac
+      clear
+      case $DN_CHOICE in
+        1) install_datanode "DataNode 1" ;;
+        2) install_datanode "DataNode 2" ;;
+        3) echo "Returning to main menu." ;;
+      esac
+    else
+      echo "Aborted by user."
+    fi
     ;;
 
   3)
