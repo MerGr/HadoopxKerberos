@@ -47,8 +47,8 @@ install_datanode() {
 }
 
 # Main dialog menu
-HEIGHT=15
-WIDTH=40
+HEIGHT=30
+WIDTH=80
 CHOICE_HEIGHT=5
 BACKTITLE="Apache Hadoop Install script"
 TITLE="Main Menu"
@@ -71,7 +71,7 @@ CHOICE=$(dialog --clear \
 echo "DEBUG: CHOICE='$CHOICE'" >&2
 
 
-#clear
+clear
 case $CHOICE in
   1)
     if confirm_kerberos_ssh; then
