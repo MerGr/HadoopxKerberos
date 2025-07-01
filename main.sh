@@ -51,7 +51,7 @@ install_datanode() {
 # Main dialog menu
 HEIGHT=15
 WIDTH=40
-CHOICE_HEIGHT=4
+CHOICE_HEIGHT=5
 BACKTITLE="Apache Hadoop Install script"
 TITLE="Main Menu"
 MENU="What would you like to install on this machine?"
@@ -86,7 +86,7 @@ case $CHOICE in
   2)
     HEIGHT=15
     WIDTH=40
-    CHOICE_HEIGHT=4
+    CHOICE_HEIGHT=3
     BACKTITLE="Apache Hadoop Install script"
     TITLE="Datanode Select"
     MENU="Choose a DataNode to install"
