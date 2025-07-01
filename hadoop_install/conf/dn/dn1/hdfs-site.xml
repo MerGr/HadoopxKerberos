@@ -42,4 +42,32 @@
                 <name>dfs.web.authentication.kerberos.principal</name>
                 <value>HTTP/hdfs-dn1.mergrweb.me@KRB.MERGRWEB.ME</value>
         </property>
+        <property>
+                <name>dfs.block.access.token.enable</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>dfs.data.transfer.protection</name>
+                <value>authentication</value>
+        </property>
+        <property>
+                <name>dfs.encrypt.data.transfer</name>
+                <value>true</value>
+        </property>
+        <property> 
+                <name>dfs.datanode.address</name>
+                <value>0.0.0.0:9866</value>
+        </property>
+        <property>
+                <name>dfs.datanode.http.address</name>
+                <value>0.0.0.0:9866</value>
+        </property>
+        <property>
+                <name>dfs.datanode.https.address</name>
+                <value>0.0.0.0:9865</value>
+        </property>
+	<property>
+                <name>dfs.http.policy</name>
+                <value>HTTPS_ONLY</value>
+        </property>
 </configuration>

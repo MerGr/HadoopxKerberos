@@ -31,14 +31,13 @@
                 <name>hadoop.security.authorization</name>
                 <value>true</value>
         </property>
-
         <property>
                 <name>hadoop.http.authentication.kerberos.principal</name>
                 <value>HTTP/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME</value>
         </property>
 
         <property>
-                <name>hadoop.security.authorization</name>
+                <name>hadoop.http.authentication.kerberos.keytab</name>
                 <value>/etc/krb5.keytab</value>
         </property>
 </configuration>

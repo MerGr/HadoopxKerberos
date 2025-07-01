@@ -55,7 +55,7 @@ if [ "$ACTION" == "start" ]; then
   remote_hadoop_cmd hdfs "$NAMENODE" "hdfs --daemon start namenode"
 
   for dn in "${DATANODES[@]}"; do
-    remote_authenticate hdfs "$dn" "hdfs/hdfs-$dn.mergrweb.me@KRB.MERGRWEB.ME"
+    remote_authenticate hdfs "$dn" "hdfs/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME"
     remote_hadoop_cmd hdfs "$dn" "hdfs --daemon start datanode"
   done
 
@@ -63,7 +63,7 @@ if [ "$ACTION" == "start" ]; then
   remote_hadoop_cmd yarn "$NAMENODE" "yarn --daemon start resourcemanager"
 
   for dn in "${DATANODES[@]}"; do
-    remote_authenticate yarn "$dn" "yarn/hdfs-$dn.mergrweb.me@KRB.MERGRWEB.ME"
+    remote_authenticate yarn "$dn" "yarn/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME"
     remote_hadoop_cmd yarn "$dn" "yarn --daemon start nodemanager"
   done
 

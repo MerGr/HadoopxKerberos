@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<configuration>
+  <property>
+    <name>ssl.client.truststore.location</name>
+    <value>/home/hadoopadmin/hadoopinstall/hadoop/etc/hadoop/ssl/truststore.jks</value>
+  </property>
+  <property>
+    <name>ssl.client.truststore.password</name>
+    <value>C9PPGYO4xSaZyzyTjo2hUoat</value>
+  </property>
+  <property>
+    <name>ssl.client.keystore.location</name>
+    <value>/home/hadoopadmin/hadoopinstall/hadoop/etc/hadoop/ssl/keystore.jks</value>
+  </property>
+  <property>
+    <name>ssl.client.keystore.password</name>
+    <value>C9PPGYO4xSaZyzyTjo2hUoat</value>
+  </property>
+  <property>
+    <name>ssl.client.keystore.keypassword</name>
+    <value>3eMzZIyPFkMFnR/mPzOiaX6W</value>
+  </property>
+</configuration>

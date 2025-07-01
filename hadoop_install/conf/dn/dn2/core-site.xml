@@ -21,7 +21,7 @@
 		<name>fs.default.name</name>
 		<value>hdfs://hdfs-nn.mergrweb.me:9005</value>
 	</property>
-<!--	<property>
+	<property>
   		<name>hadoop.security.authentication</name>
   		<value>kerberos</value>
 	</property>
@@ -30,5 +30,13 @@
   		<name>hadoop.security.authorization</name>
   		<value>true</value>
 	</property>
--->
+        <property>
+                <name>hadoop.http.authentication.kerberos.principal</name>
+                <value>HTTP/hdfs-nn.mergrweb.me@KRB.MERGRWEB.ME</value>
+        </property>
+
+        <property>
+                <name>hadoop.http.authentication.kerberos.keytab</name>
+                <value>/etc/krb5.keytab</value>
+        </property>
 </configuration>
