@@ -37,10 +37,17 @@ confirm_kerberos_ssh() {
   return $?
 }
 
+confirm_install() {
+    dialog --backtitle "Apache Hadoop Install script" \
+         --title "Confirmation" \
+         --yesno "Installing $1 on this machine, confirm ?" 7 60
+    return $?
+}
+
 # Function for installing a DataNode
 install_datanode() {
   local node="$1"
-  if confirm_kerberos_ssh; then
+  if confirm_install "$node"; then
     echo "Installing for $node..."
     cd hadoop_install/
     bash ./hadoopusr_setup.sh && bash ./hadoop_install.sh && bash ./dn_nm_config.sh "$node"
@@ -80,12 +87,14 @@ while true; do
   case $CHOICE in
     1)
       if confirm_kerberos_ssh; then
-        echo "Installing for MasterNode..."
-        cd hadoop_install/
-        bash ./hadoopusr_setup.sh && bash ./hadoop_install.sh && bash ./nn_rm_config.sh
-        cd ../
+        if confirm_install "MasterNode"; then
+          echo "Installing for MasterNode..."
+          cd hadoop_install/
+          bash ./hadoopusr_setup.sh && bash ./hadoop_install.sh && bash ./nn_rm_config.sh
+          cd ../
+        fi
       else
-        echo "Aborted by user."
+        break
       fi
       ;;
 
@@ -117,25 +126,33 @@ while true; do
           esac
         done
       else
-        echo "Aborted by user."
+        break
       fi
       ;;
 
     3)
-      echo "Installing for Kerberos Stack..."
-      cd krb_install/
-      bash ./kerberos.sh && bash ./ldap.sh
-      cd ../
-      cd docker_install/
-      bash install_docker.sh krb
-      cd ../
+      if confirm_install "Kerberos Stack"; then
+        echo "Installing for Kerberos Stack..."
+        cd krb_install/
+        bash ./kerberos.sh && bash ./ldap.sh
+        cd ../
+        cd docker_install/
+        bash install_docker.sh krb
+        cd ../
+      else
+        break
+      fi
       ;;
 
     4)
-      echo "Installing for Docker Web Stack..."
-      cd docker_install/
-      bash install_docker.sh proxy
-      cd ../
+      if confirm_install "Docker Web Stack"; then
+        echo "Installing for Docker Web Stack..."
+        cd docker_install/
+        bash install_docker.sh proxy
+        cd ../
+      else
+        break
+      fi
       ;;
 
     5)
