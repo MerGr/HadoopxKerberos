@@ -28,6 +28,7 @@ fi
 confirm_kerberos_ssh() {
   dialog --title "WARNING!!!" \
     --backtitle "Apache Hadoop Install script" \
+    --colors --msgbox "\Zb\Z1Red bold text\Zn" \
     --yesno "This installation option depends on an existing installation. Is Kerberos and SSH keys set up and working?" 7 60
 
   return $?
@@ -47,8 +48,8 @@ install_datanode() {
 }
 
 # Main dialog menu
-HEIGHT=30
-WIDTH=80
+HEIGHT=0
+WIDTH=0
 CHOICE_HEIGHT=5
 BACKTITLE="Apache Hadoop Install script"
 TITLE="Main Menu"
@@ -60,85 +61,89 @@ OPTIONS=(1 "MasterNode"
          4 "Docker + Secure Web Application Gateway + Authentik Worker/Redis/PostgreSQL + AlpineSSH"
          5 "Exit")
 
-CHOICE=$(dialog --clear \
-                --backtitle "$BACKTITLE" \
-                --title "$TITLE" \
-                --menu "$MENU" \
-                $HEIGHT $WIDTH $CHOICE_HEIGHT \
-                "${OPTIONS[@]}" \
-                2>&1 >/dev/tty)
+while true; do
+  CHOICE=$(dialog --clear \
+                  --backtitle "$BACKTITLE" \
+                  --title "$TITLE" \
+                  --menu "$MENU" \
+                  $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                  "${OPTIONS[@]}" \
+                  2>&1 >/dev/tty)
 
-echo "DEBUG: CHOICE='$CHOICE'" >&2
+  echo "DEBUG: CHOICE='$CHOICE'" >&2
 
 
-clear
-case $CHOICE in
-  1)
-    if confirm_kerberos_ssh; then
-      echo "Installing for MasterNode..."
-      cd hadoop_install/
-      bash ./hadoopusr_setup.sh && bash ./hadoop_install.sh && bash ./nn_rm_config.sh
+  clear
+  case $CHOICE in
+    1)
+      if confirm_kerberos_ssh; then
+        echo "Installing for MasterNode..."
+        cd hadoop_install/
+        bash ./hadoopusr_setup.sh && bash ./hadoop_install.sh && bash ./nn_rm_config.sh
+        cd ../
+      else
+        echo "Aborted by user."
+      fi
+      ;;
+
+    2)
+      if confirm_kerberos_ssh; then
+        while true; do
+          HEIGHT=15
+          WIDTH=40
+          CHOICE_HEIGHT=3
+          BACKTITLE="Apache Hadoop Install script"
+          TITLE="Datanode Select"
+          MENU="Choose a DataNode to install"
+
+          DN_OPTIONS=(1 "DataNode 1"
+                      2 "DataNode 2"
+                      3 "Return")
+
+          DN_CHOICE=$(dialog --clear \
+                              --backtitle "$BACKTITLE" \
+                              --title "$TITLE" \
+                              --menu "$MENU" \
+                              $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                              "${DN_OPTIONS[@]}" \
+                              2>&1 >/dev/tty)
+
+          clear
+          case $DN_CHOICE in
+            1) install_datanode "DataNode 1" ;;
+            2) install_datanode "DataNode 2" ;;
+            3) break ;;
+          esac
+        done
+      else
+        echo "Aborted by user."
+      fi
+      ;;
+
+    3)
+      echo "Installing for Kerberos Stack..."
+      cd krb_install/
+      bash ./kerberos.sh && bash ./ldap.sh
       cd ../
-    else
-      echo "Aborted by user."
-    fi
-    ;;
+      cd docker_install/
+      bash install_docker.sh krb
+      cd ../
+      ;;
 
-  2)
-    if confirm_kerberos_ssh; then
-      HEIGHT=15
-      WIDTH=40
-      CHOICE_HEIGHT=3
-      BACKTITLE="Apache Hadoop Install script"
-      TITLE="Datanode Select"
-      MENU="Choose a DataNode to install"
+    4)
+      echo "Installing for Docker Web Stack..."
+      cd docker_install/
+      bash install_docker.sh proxy
+      cd ../
+      ;;
 
-      DN_OPTIONS=(1 "DataNode 1"
-                  2 "DataNode 2"
-                  3 "Return")
-
-      DN_CHOICE=$(dialog --clear \
-                          --backtitle "$BACKTITLE" \
-                          --title "$TITLE" \
-                          --menu "$MENU" \
-                          $HEIGHT $WIDTH $CHOICE_HEIGHT \
-                          "${DN_OPTIONS[@]}" \
-                          2>&1 >/dev/tty)
-
-      clear
-      case $DN_CHOICE in
-        1) install_datanode "DataNode 1" ;;
-        2) install_datanode "DataNode 2" ;;
-        3) echo "Returning to main menu." ;;
-      esac
-    else
-      echo "Aborted by user."
-    fi
-    ;;
-
-  3)
-    echo "Installing for Kerberos Stack..."
-    cd krb_install/
-    bash ./kerberos.sh && bash ./ldap.sh
-    cd ../
-    cd docker_install/
-    bash install_docker.sh krb
-    cd ../
-    ;;
-
-  4)
-    echo "Installing for Docker Web Stack..."
-    cd docker_install/
-    bash install_docker.sh proxy
-    cd ../
-    ;;
-
-  5)
-    echo "Exiting..."
-    exit 0
-    ;;
-  *)
-    echo "Invalid choice. Exiting..."
-    exit 1
-    ;;
-esac
+    5)
+      echo "Exiting..."
+      exit 0
+      ;;
+    *)
+      echo "Invalid choice. Exiting..."
+      exit 1
+      ;;
+  esac
+done
