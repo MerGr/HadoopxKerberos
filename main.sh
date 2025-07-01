@@ -19,12 +19,6 @@ if ! ([[ "$ID" == "ubuntu" || "$ID" == "debian" ]] || [[ "$ID_LIKE" == *"debian"
   exit 72
 fi
 
-# Make sure .env file exists
-if [ ! -f ./.env ]; then
-  echo ".env file not found! Aborting..."
-  exit 1
-fi
-
 # Install dependencies
 if ! dpkg -l dialog >/dev/null 2>&1; then
   echo "Installing dependencies..."
