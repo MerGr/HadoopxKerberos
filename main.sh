@@ -159,9 +159,5 @@ while true; do
       echo "Exiting..."
       exit 0
       ;;
-    *)
-      echo "Invalid choice. Exiting..."
-      exit 1
-      ;;
   esac
 done
