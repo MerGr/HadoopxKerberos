@@ -34,9 +34,6 @@ confirm_kerberos_ssh() {
   dialog --backtitle "Apache Hadoop Install script" \
          --title "Confirmation" \
          --yesno "Is Kerberos and SSH key setup complete?" 7 60
-}
-
-
   return $?
 }
 
