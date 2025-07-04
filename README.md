@@ -47,7 +47,7 @@ and select which part of the cluster software would you want to install and dedi
 
 After installation please finish configuration of your NGINX subfolders/subdomains and link Authentik with Kerberos as shown in Authentik Docs
 
-# How it works & User Guide
+# System Architecture and User Guide
 
 This script sets up a 5 node system that features :
 - 1 Dedicated Namenode
@@ -58,6 +58,16 @@ This script sets up a 5 node system that features :
 <p align="center">
   <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/net.png">
 </p>
+
+For our personal implementation, these are our machines :
+
+| **Role**                                 | **Hardware Configuration**                         | **Location**                     |
+|:-----------------------------------------|:---------------------------------------------------|:---------------------------------|
+| Kerberos + OpenLDAP + Authentik on Docker| 2 cores / 4 threads, 4GB RAM, 100Mbps bandwidth     | Faculty of Sciences Semlalia     |
+| Hadoop Namenode + Cloudera Hue on Docker | 2 cores / 4 threads, 4GB RAM, 1Gbps bandwidth       | Faculty of Sciences Semlalia     |
+| NGINX + Authentik + Alpine SSH on Docker | 1 core / 2 threads, 1GB RAM + 4GB SWAP, 50Mbps**    | Oracle Madrid                    |
+| Hadoop Datanode 1 + SSH                  | 1 core / 2 threads, 1GB RAM + 4GB SWAP, 50Mbps**    | Oracle Paris                     |
+| Hadoop Datanode 2 + SSH                  | 1 core / 2 threads, 1GB RAM + 4GB SWAP, 50Mbps**    | Oracle Frankfurt                 |
 
 
 ### Communications
