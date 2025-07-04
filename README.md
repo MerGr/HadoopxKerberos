@@ -47,7 +47,7 @@ and select which part of the cluster software would you want to install and dedi
 
 After installation please finish configuration of your NGINX subfolders/subdomains and link Authentik with Kerberos as shown in Authentik Docs
 
-# System Architecture and User Guide
+# System Architecture and Usage Guide
 
 This script sets up a 5 node system that features :
 - 1 Dedicated Namenode
@@ -69,7 +69,9 @@ For our personal implementation, these are our machines :
 | Hadoop Datanode 1 + SSH                  | 1 core / 2 threads, 1GB RAM + 4GB SWAP, 50Mbps**    | Oracle Paris                     |
 | Hadoop Datanode 2 + SSH                  | 1 core / 2 threads, 1GB RAM + 4GB SWAP, 50Mbps**    | Oracle Frankfurt                 |
 
-
+>**Machines running Proxmox VE 8.4 hypervisors, services running in a Canonical Ubuntu 24.04 Virtual Machine*
+>
+>***Oracle Cloud Infrastructure Standard E2.1 Micro shape running Canonical Ubuntu 24.04*
 ### Communications
 
 these services communicate with each other via NGINX TCP streams on the subdomains, NGINX itself reaches these services via Key based SSH TCP port forwarding tunnels running on Docker
