@@ -27,7 +27,7 @@ End-2-End SSL encrypted Hadoop Cluster with KRB5 + OpenLDAP backend, featuring a
 
 # Demo 
 <p align="center">
-    <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/demo.gif" width="400"/>
+    <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/demo.gif" width="1200"/>
 </p>
 
 # Features
