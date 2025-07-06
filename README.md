@@ -1,6 +1,8 @@
 <p align="center">
   <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/hadoopkrbtransparent.png" height="250" />
-  <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/hxklogo.png" width="300" />
+</p>
+<p align="center">
+  <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/hxklogo.png" width="600" />
 </p>
 
 # Hadoop Cluster + Kerberos Authentication Server
@@ -24,9 +26,7 @@ End-2-End SSL encrypted Hadoop Cluster with KRB5 + OpenLDAP backend, featuring a
 - [Further Reading](#further-reading)
 
 # Demo 
-<p align="center">
-    <video src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/demo.mp4" width="300" />
-</p>
+[Watch the demo video](https://raw.githubusercontent.com/MerGr/HadoopxKerberos/refs/heads/main/assets/demo.mp4)
 
 # Features
 - Distributed minimal 3-node Hadoop Cluster configuration
@@ -159,5 +159,5 @@ Authenthik offers a very clean WebUI for managing users, proxy providers (We set
 > Please do note that this Hadoop is configured with the same certificate as the one used in NGINX, **you are expected to replace it with your own to avoid issues by converting your NGINX provided CA certificate to JKS/JCEKS, or making a self-signed certificate using OpenSSL, for the former you will need your root CA certificate and the private keys used for signing it**
 
 # Further Reading
-
+[University Report](https://raw.githubusercontent.com/MerGr/HadoopxKerberos/refs/heads/main/assets/PFE-VF.pdf)
 
