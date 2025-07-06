@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/hadoopkrbtransparent.png" height="250">
+  <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/hadoopkrbtransparent.png" height="250" />
+  <img src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/hxklogo.png" width="300" />
 </p>
 
 # Hadoop Cluster + Kerberos Authentication Server
@@ -11,14 +12,21 @@ End-2-End SSL encrypted Hadoop Cluster with KRB5 + OpenLDAP backend, featuring a
 **Table of Contents**
 
 - [Hadoop Cluster + Kerberos Authentication Server](#hadoop-cluster---kerberos-authentication-server)
+- [Demo](#demo)
 - [Features](#features)
 - [Preparation](#preparation)
 - [Installation](#installation)
-- [How it works & User Guide](#how-it-works---user-guide)
+- [System Architecture & Usage Guide](#system-architecture-and-usage-guide)
     + [Communications](#communications)
     + [Hadoop](#hadoop)
     + [Kerberos & OpenLDAP](#kerberos---openldap)
     + [NGINX and Authentik](#nginx-and-authentik)
+- [Further Reading](#further-reading)
+
+# Demo 
+<p align="center">
+    <video src="https://github.com/MerGr/HadoopxKerberos/blob/main/assets/demo.mp4" width="300" />
+</p>
 
 # Features
 - Distributed minimal 3-node Hadoop Cluster configuration
@@ -149,3 +157,7 @@ and Authentik, an Identity Provider that can (and while outside the scope of the
 Authenthik offers a very clean WebUI for managing users, proxy providers (We setup SWAG as a forward auth proxy provider, and Hadoop as an associated application, both associated to the default embedded Auth Outpost), etc...
 
 > Please do note that this Hadoop is configured with the same certificate as the one used in NGINX, **you are expected to replace it with your own to avoid issues by converting your NGINX provided CA certificate to JKS/JCEKS, or making a self-signed certificate using OpenSSL, for the former you will need your root CA certificate and the private keys used for signing it**
+
+# Further Reading
+
+
